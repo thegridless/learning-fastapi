@@ -1,6 +1,6 @@
 from uuid import UUID
 from app.schemas.tuned_model import TunedModel
-from pydentic import EmailStr
+from pydantic import EmailStr
 
 
 class ShowUser(TunedModel):
