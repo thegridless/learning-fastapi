@@ -46,3 +46,20 @@ jobs:
       - name: Run black
         run: |
           poetry run black ./
+
+  build:
+      runs-on: ubuntu-latest
+      if: github.ref == 'refs/heads/main'
+      needs: [run_tests]
+
+      steps:
+        - name: Login to Docker
+          run: echo ${{ secrets.DOCKER_TOKEN }} | docker login -u ${{ vars.DOCKER_LOGIN }} --password-stdin
+
+        - uses: actions/chjeckout@v3
+
+        - name: Build image
+          run: docker build -t ${{vars.DOCKER_PROJECT}}:${GITHUB_COMMIT} -f Dockerfile .
+
+        - name: Push image
+          run: docker push ${{vars.DOCKER_PROJECT}}:${GITHUB_COMMIT}
